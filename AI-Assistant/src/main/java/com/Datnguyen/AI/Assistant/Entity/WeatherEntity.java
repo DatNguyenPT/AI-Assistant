@@ -1,10 +1,7 @@
 package com.Datnguyen.AI.Assistant.Entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import org.springframework.data.relational.core.mapping.Table;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 
@@ -12,18 +9,20 @@ import java.time.LocalDateTime;
 @Table(name = "currentweather")
 public class WeatherEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "city")
     private String city;
-    private String country;
+    @Column(name = "searchtime")
     private LocalDateTime searchTime;
+    @Column(name = "wingspeed")
     private double wingSpeed;
+    @Column(name = "humidity")
     private double humidity;
+    @Column(name = "cloud")
     private double cloud;
 
     public WeatherEntity() {}
-    public WeatherEntity(String city, String country, LocalDateTime searchTime, double wingSpeed, double humidity, double cloud) {
+    public WeatherEntity(String city, LocalDateTime searchTime, double wingSpeed, double humidity, double cloud) {
         this.city = city;
-        this.country = country;
         this.searchTime = searchTime;
         this.wingSpeed = wingSpeed;
         this.humidity = humidity;
@@ -36,14 +35,6 @@ public class WeatherEntity {
 
     public void setCity(String city) {
         this.city = city;
-    }
-
-    public String getCountry() {
-        return country;
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
     }
 
     public LocalDateTime getSearchTime() {

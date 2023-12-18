@@ -1,12 +1,10 @@
 package com.Datnguyen.AI.Assistant.Service;
 
 import com.Datnguyen.AI.Assistant.AppConfig;
-import com.Datnguyen.AI.Assistant.Repository.CurrentWeatherJDBCRepo;
 import com.Datnguyen.AI.Assistant.Entity.WeatherEntity;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
@@ -19,13 +17,11 @@ import java.util.StringTokenizer;
 public class WeatherService {
     private RestTemplate restTemplate;
     private AppConfig appConfig;
-    private CurrentWeatherJDBCRepo currentWeatherJDBCRepo;
     private HashMap<String, String>map;
 
-    WeatherService(RestTemplate restTemplate, AppConfig appConfig, CurrentWeatherJDBCRepo currentWeatherJDBCRepo){
+    WeatherService(RestTemplate restTemplate, AppConfig appConfig){
         this.restTemplate = restTemplate;
         this.appConfig = appConfig;
-        this.currentWeatherJDBCRepo = currentWeatherJDBCRepo;
         map = new HashMap<>();
     }
 
@@ -37,7 +33,6 @@ public class WeatherService {
             // Parse JSON to WeatherEntity object
             weatherEntity = parseJsonToWeatherEntity(resultJson, city); // requested data
             StringTokenizer tokenizer = new StringTokenizer(resultJson, " ");
-
             while (tokenizer.hasMoreTokens()) {
                 String token = tokenizer.nextToken();
                 String[] keyValue = token.split(":");
@@ -49,8 +44,6 @@ public class WeatherService {
                     System.err.println("Unexpected token format: " + token);
                 }
             }
-            // Save WeatherEntity to the database
-            currentWeatherJDBCRepo.save(weatherEntity);
         } catch (Exception e) {
             // Handle exception (e.g., log or throw a custom exception)
             e.printStackTrace();
@@ -60,16 +53,13 @@ public class WeatherService {
     private WeatherEntity parseJsonToWeatherEntity(String json, String city) {
         // Parse JSON to a map for easier access
         Map<String, Object> jsonMap = parseJsonToMap(json);
-
-        String country = (String) jsonMap.get("country");
-
         Map<String, Object> current = (Map<String, Object>) jsonMap.get("current");
         double windSpeed = parseDoubleFromMap(current, "wind_kph");
         double humidity = parseDoubleFromMap(current, "humidity");
         double cloud = parseDoubleFromMap(current, "cloud");
 
         // Create a new WeatherEntity
-        WeatherEntity weatherEntity = new WeatherEntity(city, country, LocalDateTime.now(), windSpeed, humidity, cloud);
+        WeatherEntity weatherEntity = new WeatherEntity(city, LocalDateTime.now(), windSpeed, humidity, cloud);
 
         return weatherEntity;
     }
