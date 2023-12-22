@@ -1,14 +1,18 @@
 package com.Datnguyen.AI.Assistant.Entity;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
+import javax.annotation.processing.Generated;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "currentweather")
 public class WeatherEntity {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private long id;
     @Column(name = "city")
     private String city;
     @Column(name = "searchtime")
@@ -20,14 +24,23 @@ public class WeatherEntity {
     @Column(name = "cloud")
     private double cloud;
 
+
+    @Column(name = "time")
+    private LocalDate time;
+
     public WeatherEntity() {}
-    public WeatherEntity(String city, LocalDateTime searchTime, double wingSpeed, double humidity, double cloud) {
+    public WeatherEntity(String city, LocalDateTime searchTime, double wingSpeed, double humidity, double cloud, LocalDate time) {
         this.city = city;
         this.searchTime = searchTime;
         this.wingSpeed = wingSpeed;
         this.humidity = humidity;
         this.cloud = cloud;
+        this.time = time;
     }
+
+    public long getId(){return id;}
+
+    public void setId(long id){this.id = id;}
 
     public String getCity() {
         return city;
@@ -67,5 +80,12 @@ public class WeatherEntity {
 
     public void setCloud(double cloud) {
         this.cloud = cloud;
+    }
+    public LocalDate getTime() {
+        return time;
+    }
+
+    public void setTime(LocalDate time) {
+        this.time = time;
     }
 }

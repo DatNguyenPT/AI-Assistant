@@ -1,5 +1,6 @@
-package com.Datnguyen.AI.Assistant;
+package com.Datnguyen.AI.Assistant.Config;
 
+import com.Datnguyen.AI.Assistant.Entity.UserEntity;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -13,6 +14,8 @@ public class AppConfig {
     public RestTemplate restTemplate(){
         return new RestTemplate();
     }
+    @Bean
+    public UserEntity userEntity(){return new UserEntity();}
 
     @Value("${external.api.key}")
     private String apiKey;

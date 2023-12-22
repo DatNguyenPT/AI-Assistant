@@ -1,32 +1,34 @@
 package com.Datnguyen.AI.Assistant.Service;
 
-import com.Datnguyen.AI.Assistant.AppConfig;
+import com.Datnguyen.AI.Assistant.Config.AppConfig;
 import com.Datnguyen.AI.Assistant.Entity.WeatherEntity;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-@org.springframework.stereotype.Service
-public class WeatherService {
+@Service
+public class WeatherForecast {
     private RestTemplate restTemplate;
     private AppConfig appConfig;
-    private HashMap<String, String>map;
+    private HashMap<String, String> map;
 
-    WeatherService(RestTemplate restTemplate, AppConfig appConfig){
+    WeatherForecast(RestTemplate restTemplate, AppConfig appConfig){
         this.restTemplate = restTemplate;
         this.appConfig = appConfig;
         map = new HashMap<>();
     }
 
-    public WeatherEntity getCurrentWeather(String city) {
-        String url = appConfig.getWeatherInfoURL() + "/current.json?key=" + appConfig.getApiKey() + "&q=" + city;
+    public String weatherForecast(String city) {
+        String url = appConfig.getWeatherInfoURL() + "/forecast.json?key=" + appConfig.getApiKey() + "&q=" + city;
         String resultJson = restTemplate.getForObject(url, String.class); // full data
         WeatherEntity weatherEntity = new WeatherEntity();
         try {
@@ -48,8 +50,9 @@ public class WeatherService {
             // Handle exception (e.g., log or throw a custom exception)
             e.printStackTrace();
         }
-        return weatherEntity;
+        return resultJson;
     }
+
     private WeatherEntity parseJsonToWeatherEntity(String json, String city) {
         // Parse JSON to a map for easier access
         Map<String, Object> jsonMap = parseJsonToMap(json);
@@ -59,7 +62,7 @@ public class WeatherService {
         double cloud = parseDoubleFromMap(current, "cloud");
 
         // Create a new WeatherEntity
-        WeatherEntity weatherEntity = new WeatherEntity(city, LocalDateTime.now(), windSpeed, humidity, cloud);
+        WeatherEntity weatherEntity = new WeatherEntity(city, LocalDateTime.now(), windSpeed, humidity, cloud, LocalDate.now());
 
         return weatherEntity;
     }
