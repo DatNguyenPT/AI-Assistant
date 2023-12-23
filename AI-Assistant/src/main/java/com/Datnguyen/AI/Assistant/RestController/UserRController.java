@@ -3,44 +3,49 @@ package com.Datnguyen.AI.Assistant.RestController;
 import com.Datnguyen.AI.Assistant.Entity.UserEntity;
 import com.Datnguyen.AI.Assistant.Repository.UserJDBCRepo;
 import com.Datnguyen.AI.Assistant.Service.UserService;
-import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping(value = "/api")
 public class UserRController {
     private UserService userService;
-    private PasswordEncoder encoder;
     private UserJDBCRepo userJDBCRepo;
-    public UserRController(UserService userService, UserJDBCRepo userJDBCRepo, PasswordEncoder encoder){
+    private PasswordEncoder passwordEncoder; // Use PasswordEncoder directly
+
+    public UserRController(UserService userService, UserJDBCRepo userJDBCRepo, PasswordEncoder passwordEncoder){
         this.userService = userService;
         this.userJDBCRepo = userJDBCRepo;
-        this.encoder = encoder;
+        this.passwordEncoder = passwordEncoder; // Inject PasswordEncoder directly
     }
 
     @PostMapping(value = "/createnewuser")
     public ResponseEntity<UserEntity> createUser(@RequestBody @Valid UserEntity newUser) {
-        newUser.setPassword(encoder.encode(newUser.getPassword())); // hashing
+        newUser.setPassword(passwordEncoder.encode(newUser.getPassword())); // hashing
         userJDBCRepo.save(newUser);
         return new ResponseEntity<>(newUser, HttpStatus.CREATED);
     }
 
-    @PostMapping(value = "/login")
-    public ResponseEntity<?> login(@RequestParam String loginname, @RequestParam String password) {
-        UserEntity user = userService.login(loginname, password);
-
-        if (user != null) {
-            // Use the PasswordEncoder to check if the provided password matches the stored hashed password
-            if (encoder.matches(password, user.getPassword())) {
-                return new ResponseEntity<>(user, HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>("Invalid password", HttpStatus.BAD_REQUEST);
-            }
-        } else {
-            return new ResponseEntity<>("No existing account", HttpStatus.BAD_REQUEST);
-        }
-    }
+//    @PostMapping(value = "/login")
+//    public ResponseEntity<?> login(@RequestParam String loginname, @RequestParam String password) {
+//        // Authenticate the user
+//        Authentication authentication = authenticationManager.authenticate(
+//                new UsernamePasswordAuthenticationToken(loginname, password));
+//
+//        // Set the authentication in the SecurityContext
+//        SecurityContextHolder.getContext().setAuthentication(authentication);
+//
+//        if (authentication.isAuthenticated()) {
+//            // The user is authenticated, you can proceed with further actions
+//            // (e.g., generate a token, return user details, etc.)
+//            UserEntity user = userService.login(loginname, password);
+//            return new ResponseEntity<>(user, HttpStatus.OK);
+//        } else {
+//            // Authentication failed
+//            return new ResponseEntity<>("Invalid credentials", HttpStatus.UNAUTHORIZED);
+//        }
+//    }
 }

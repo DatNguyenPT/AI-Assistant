@@ -1,6 +1,6 @@
 package com.Datnguyen.AI.Assistant.Entity;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 
 import javax.annotation.processing.Generated;
 import java.time.LocalDate;

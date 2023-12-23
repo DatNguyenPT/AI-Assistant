@@ -1,30 +1,34 @@
 package com.Datnguyen.AI.Assistant.Entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.Datnguyen.AI.Assistant.Security.ValidEmailAnnotation;
+import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import lombok.NoArgsConstructor;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.NotEmpty;
+import javax.persistence.Entity;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotEmpty;
+
 @Entity
 @NoArgsConstructor
 @Table(name = "user")
 public class UserEntity {
-    @Id
     @Column(name = "username")
     private String username;
-    @NotEmpty(message = "Login Name Can Not Be Blank")
-    @Column(name = "loginname")
-    private String loginname;
+
+    @Id
+    @NotEmpty(message = "Email Can Not Be Blank")
+    @Column(name = "email")
+    @ValidEmailAnnotation
+    private String email;
     @NotEmpty(message = "Password Can Not Be Blank")
     @Column(name = "password")
     private String password;
 
     @NotNull(message = "No Existed Account")
-    public UserEntity(String username, String loginname, String password) {
+    public UserEntity(String username, String email, String password) {
         this.username = username;
-        this.loginname = loginname;
+        this.email = email;
         this.password = password;
     }
 
@@ -36,12 +40,12 @@ public class UserEntity {
         this.username = username;
     }
 
-    public String getLoginname() {
-        return loginname;
+    public String getEmail() {
+        return email;
     }
 
-    public void setLoginname(String loginname) {
-        this.loginname = loginname;
+    public void setLoginname(String email) {
+        this.email = email;
     }
 
     public String getPassword() {

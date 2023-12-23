@@ -13,6 +13,6 @@ import java.util.Optional;
 public interface UserJDBCRepo extends CrudRepository<UserEntity, Long> {
     @Query(value = "SELECT * FROM user", nativeQuery = true)
     List<UserEntity>getAllUser();
-    @Query(value = "SELECT * FROM user WHERE username = :username", nativeQuery = true)
-    Optional<UserEntity> foundUser(@Param("username")String username);
+    @Query(value = "SELECT * FROM user WHERE email = :email", nativeQuery = true)
+    Optional<UserEntity> foundUser(@Param("email")String email);
 }

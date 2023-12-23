@@ -14,14 +14,14 @@ public class UserService {
         this.userJDBCRepo = userJDBCRepo;
     }
 
-    public UserEntity createUser(String loginname, String password, String username){
-        return new UserEntity(username, loginname, password);
+    public UserEntity createUser(String email, String password, String username){
+        return new UserEntity(username, email, password);
     }
 
-    public UserEntity login(String loginname, String password){
+    public UserEntity login(String email, String password){
         List<UserEntity>allUsers = userJDBCRepo.getAllUser();
         for (UserEntity userInList : allUsers){
-            if (userInList.getLoginname().equals(loginname) && userInList.getPassword().equals(password)){
+            if (userInList.getEmail().equals(email) && userInList.getPassword().equals(password)){
                 return userInList;
             }
         }
